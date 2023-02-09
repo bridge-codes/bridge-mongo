@@ -1,0 +1,27 @@
+{
+  "name": "bridge-mongo",
+  "version": "1.0.1",
+  "description": "A mongodb ORM on top of mongoose that match perfectly with the Bridge framework",
+  "main": "dist/source/index.js",
+  "types": "dist/source/index.d.ts",
+  "bugs": "https://github.com/bridge-codes/bridge-mongo/issues",
+  "homepage": "https://bridge.codes",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "publish-minor": "tsc && npm version patch && npm publish"
+  },
+  "keywords": [
+    "mongoose",
+    "typescript",
+    "typed",
+    "bridge"
+  ],
+  "author": "Bridge Team <support@bridge.codes>",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^6.9.0"
+  }
+}
