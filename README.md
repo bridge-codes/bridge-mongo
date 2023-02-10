@@ -11,7 +11,7 @@ Bridge-Mongo is meant to be a type-safe ORM built on top of Mongoose. The main f
 <img src="/img/bridge-mongo-gif.gif" />
 
 <h2>
-<img src="/img/development.svg" height="24"/>
+<img src="/img/development.svg" height="20"/>
 Development
 </h2>
 
@@ -22,7 +22,7 @@ To follow the development or contribute, join [the Discord](https://discord.gg/y
 - [ ] Aggregate
 
 <h2>
-<img src="/img/contributing.svg" height="24" />
+<img src="/img/contributing.svg" height="20" />
     Contributing
 </h2>
 
