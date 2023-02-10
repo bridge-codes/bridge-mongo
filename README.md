@@ -20,7 +20,8 @@ To follow the development or contribute, join [the Discord](https://discord.gg/y
 If you want any guidance whatsoever with the contribution, don't hesitate to reach out [on Discord](https://discord.gg/yxjrwm7Bfr)!
 
 <h2> <img src="/img/installation.svg" height="20" /> Installation </h2>
-You can use your favorite package manager to install __Bridge-mongo__.
+
+You can use your favorite package manager to install **Bridge-Mongo**.
 
 ```
 npm i bridge-mongo
