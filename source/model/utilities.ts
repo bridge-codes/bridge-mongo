@@ -40,3 +40,7 @@ export type FullModelIGen<
 > = Pretify<
   IncludeIdAndTimestamps<ModelI & Required<Pick<ModelI, DefaultValueProperties<SchemaDef>>>, Config>
 >;
+
+export type CompleteProj<Model> = {
+  [T in keyof Required<Model>]: 1;
+};

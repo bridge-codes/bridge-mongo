@@ -42,6 +42,7 @@ export class BridgeModel<
         return {
           error: { status: 409, name: `${this.modelName} already exists`, data: err.keyValue },
         };
+      // Should we handle some other errors here ?
       else throw err;
     }
   };
@@ -49,28 +50,89 @@ export class BridgeModel<
   find: BridgeModelI<Name, SchemaDef, ModelI, Config, FullModelI>['find'] = async (
     filter,
     projection,
+    options,
   ) => {
     try {
-      const promise = this.mongooseModel.findOne(filter);
-      const res: any = projection ? await promise.select(projection).lean() : await promise.lean();
+      return await this.mongooseModel.find(filter, projection || undefined, {
+        lean: true,
+        ...(options || {}),
+      });
+    } catch (err: any) {
+      // Should we handle some errors here ?
+      throw err;
+    }
+  };
 
-      if (!res) return { error: { status: 404, name: 'Document not found' } };
+  findById: BridgeModelI<Name, SchemaDef, ModelI, Config, FullModelI>['findById'] = async (
+    filter,
+    projection,
+    options,
+  ) => {
+    try {
+      const res: any = await this.mongooseModel.findById(filter, projection || undefined, {
+        lean: true,
+        ...(options || {}),
+      });
+
+      if (!res) return { error: { status: 404, name: `${this.modelName} not found` } };
+      return res;
     } catch (err) {
-      return { error: { status: 404, name: `${this.modelName} not found`, data: err } } as any;
+      // Should we handle some errors here ?
+      throw err;
     }
   };
 
   findOne: BridgeModelI<Name, SchemaDef, ModelI, Config, FullModelI>['findOne'] = async (
     filter,
     projection,
+    options,
   ) => {
     try {
-      const promise = this.mongooseModel.findOne(filter);
-      const res: any = projection ? await promise.select(projection).lean() : await promise.lean();
+      const res: any = await this.mongooseModel.findOne(filter, projection || undefined, {
+        lean: true,
+        ...(options || {}),
+      });
 
-      if (!res) return { error: { status: 404, name: 'Document not found' } };
+      if (!res) return { error: { status: 404, name: `${this.modelName} not found` } };
+      return res;
     } catch (err) {
-      return { error: { status: 404, name: `${this.modelName} not found`, data: err } } as any;
+      // Should we handle some errors here ?
+      throw err;
+    }
+  };
+
+  findOneAndUpdate: BridgeModelI<Name, SchemaDef, ModelI, Config, FullModelI>['findOneAndUpdate'] =
+    async (filter, updateQuery, options) => {
+      try {
+        const res: any = await this.mongooseModel.findOneAndUpdate(filter, updateQuery, {
+          lean: true,
+          ...options,
+        });
+        if (!res) return { error: { status: 404, name: `${this.modelName} not found` } };
+        return res;
+      } catch (err) {
+        // Should we handle some errors here ?
+        throw err;
+      }
+    };
+
+  findByIdAndUpdate: BridgeModelI<
+    Name,
+    SchemaDef,
+    ModelI,
+    Config,
+    FullModelI
+  >['findByIdAndUpdate'] = async (filter, updateQuery, options) => {
+    try {
+      const res: any = await this.mongooseModel.findByIdAndUpdate(filter, updateQuery, {
+        lean: true,
+        ...options,
+      });
+      if (!res) return { error: { status: 404, name: `${this.modelName} not found` } };
+      return res;
+    } catch (err) {
+      // Should we handle some errors here ?
+      throw err;
     }
   };
 }

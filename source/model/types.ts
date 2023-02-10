@@ -1,11 +1,19 @@
 import { Pretify, StricProperty, PreserverOptionalKeys } from '../utils';
-import { SchemaDefinition, ObjectId, FilterQuery, SortOrder } from 'mongoose';
+import {
+  SchemaDefinition,
+  ObjectId,
+  FilterQuery,
+  SortOrder,
+  ClientSession,
+  UpdateQuery,
+} from 'mongoose';
 import { SchemaToType, SchemaConfig, DefaultValueProperties } from '../schema';
 import {
   IncludeIdAndTimestamps,
   CreateReturnWithErrors,
   Projection,
   ExtractModelIFromProj,
+  CompleteProj,
 } from './utilities';
 
 export interface BridgeModelI<
@@ -22,6 +30,9 @@ export interface BridgeModelI<
 > {
   create: <CreateData extends ModelI>(
     data: StricProperty<CreateData, ModelI>,
+    options?: {
+      session?: ClientSession;
+    },
   ) => Promise<
     Pretify<
       CreateReturnWithErrors<
@@ -35,39 +46,94 @@ export interface BridgeModelI<
     >
   >;
 
-  find: <Proj extends Projection<Required<FullModelI>> | undefined = undefined>(
+  find: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
     filer: FilterQuery<FullModelI>,
     proj?: Proj,
     options?: {
       limit?: number;
       skip?: number;
-      // sort?: Proj extends undefined
-      //   ? { [T in keyof FullModelI]?: SortOrder }
-      //   : { [T in keyof Pretify<Proj & { _id: 1 }>]?: SortOrder };
+      sort?: { [T in keyof FullModelI]?: SortOrder };
+      session?: ClientSession;
     },
   ) => Promise<
     Array<
-      Proj extends undefined
-        ? FullModelI
-        : Pretify<
-            PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
-              _id: ObjectId;
-            }
-          >
+      Pretify<
+        PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
+          _id: ObjectId;
+        }
+      >
     >
   >;
 
-  findOne: <Proj extends Projection<Required<FullModelI>> | undefined = undefined>(
+  findById: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
+    filer: string | ObjectId,
+    proj?: Proj,
+    options?: {
+      session?: ClientSession;
+    },
+  ) => Promise<
+    | Pretify<
+        PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
+          _id: ObjectId;
+        }
+      >
+    | { error: { status: 404; name: `${ModelName} not found`; data?: any } }
+  >;
+
+  findOne: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
     filer: FilterQuery<FullModelI>,
     proj?: Proj,
+    options?: {
+      session?: ClientSession;
+    },
   ) => Promise<
-    | (Proj extends undefined
-        ? FullModelI
-        : Pretify<
-            PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
-              _id: ObjectId;
-            }
-          >)
-    | { error: { status: 404; name: `${ModelName} not found`; data?: any } }
+    | Pretify<
+        PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
+          _id: ObjectId;
+        }
+      >
+    | { error: { status: 404; name: `${ModelName} not found` } }
+  >;
+
+  findOneAndUpdate: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
+    filter: FilterQuery<FullModelI>,
+    updateQuery: UpdateQuery<ModelI>,
+    options?: {
+      projection?: Proj;
+      session?: ClientSession;
+      returnDocument?: 'before' | 'after';
+      new?: boolean;
+      sort?: { [T in keyof FullModelI]?: SortOrder };
+      timestamps?: boolean;
+      overwrite?: boolean;
+    },
+  ) => Promise<
+    | Pretify<
+        PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
+          _id: ObjectId;
+        }
+      >
+    | { error: { status: 404; name: `${ModelName} not found` } }
+  >;
+
+  findByIdAndUpdate: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
+    filter: string | ObjectId,
+    updateQuery: UpdateQuery<ModelI>,
+    options?: {
+      projection?: Proj;
+      session?: ClientSession;
+      returnDocument?: 'before' | 'after';
+      new?: boolean;
+      sort?: { [T in keyof FullModelI]?: SortOrder };
+      timestamps?: boolean;
+      overwrite?: boolean;
+    },
+  ) => Promise<
+    | Pretify<
+        PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
+          _id: ObjectId;
+        }
+      >
+    | { error: { status: 404; name: `${ModelName} not found` } }
   >;
 }

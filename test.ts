@@ -47,7 +47,9 @@ async () => {
 
   DB.user.mongooseModel.create({ name: 'df' });
 
-  const dsf = await DB.test.findOne({ age: "'df" }, { ahoui: 1, age: 1 });
+  const dsf = await DB.test.findOne({}, { age: 1, buffer: 1 });
+
+  // const assdfd = await DB.user.create({'name':})
 
   // // type Plurial<T extends string> = T extends `${string}${'s' | 'sh' | 'ch' | 'x' | 'z'}`
   // //   ? `${T}es`
