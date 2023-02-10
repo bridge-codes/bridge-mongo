@@ -1,5 +1,5 @@
 import { Pretify, StricProperty, PreserverOptionalKeys } from '../utils';
-import { SchemaDefinition, ObjectId, FilterQuery } from 'mongoose';
+import { SchemaDefinition, ObjectId, FilterQuery, SortOrder } from 'mongoose';
 import { SchemaToType, SchemaConfig, DefaultValueProperties } from '../schema';
 import {
   IncludeIdAndTimestamps,
@@ -32,6 +32,28 @@ export interface BridgeModelI<
         >,
         ModelName
       >
+    >
+  >;
+
+  find: <Proj extends Projection<Required<FullModelI>> | undefined = undefined>(
+    filer: FilterQuery<FullModelI>,
+    proj?: Proj,
+    options?: {
+      limit?: number;
+      skip?: number;
+      // sort?: Proj extends undefined
+      //   ? { [T in keyof FullModelI]?: SortOrder }
+      //   : { [T in keyof Pretify<Proj & { _id: 1 }>]?: SortOrder };
+    },
+  ) => Promise<
+    Array<
+      Proj extends undefined
+        ? FullModelI
+        : Pretify<
+            PreserverOptionalKeys<ExtractModelIFromProj<Required<FullModelI>, Proj>, FullModelI> & {
+              _id: ObjectId;
+            }
+          >
     >
   >;
 

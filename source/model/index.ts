@@ -46,6 +46,20 @@ export class BridgeModel<
     }
   };
 
+  find: BridgeModelI<Name, SchemaDef, ModelI, Config, FullModelI>['find'] = async (
+    filter,
+    projection,
+  ) => {
+    try {
+      const promise = this.mongooseModel.findOne(filter);
+      const res: any = projection ? await promise.select(projection).lean() : await promise.lean();
+
+      if (!res) return { error: { status: 404, name: 'Document not found' } };
+    } catch (err) {
+      return { error: { status: 404, name: `${this.modelName} not found`, data: err } } as any;
+    }
+  };
+
   findOne: BridgeModelI<Name, SchemaDef, ModelI, Config, FullModelI>['findOne'] = async (
     filter,
     projection,

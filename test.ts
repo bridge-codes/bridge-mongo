@@ -34,26 +34,30 @@ const DB = createDB({
   test: testSchema,
 });
 
-const res = DB.test.modelInterface;
+async () => {
+  const res = DB.test.modelInterface;
 
-const config = DB.test.configInterface;
+  const config = DB.test.configInterface;
 
-const test = DB.test.create({ sf: 78 });
+  const test = DB.test.create({ sf: 78 });
 
-const user = DB.test.findOne({}, { age: 1, sf: 1 });
+  const user = DB.test.findOne({}, { age: 1 });
 
-type OJHK = typeof user;
+  type OJHK = typeof user;
 
-DB.user.mongooseModel.create({ name: 'df' });
+  DB.user.mongooseModel.create({ name: 'df' });
 
-// // type Plurial<T extends string> = T extends `${string}${'s' | 'sh' | 'ch' | 'x' | 'z'}`
-// //   ? `${T}es`
-// //   : `${T}s`;
+  const dsf = await DB.test.findOne({ age: "'df" }, { ahoui: 1, age: 1 });
 
-// // type Result = Plurial<'chevals'>; // 'a'
+  // // type Plurial<T extends string> = T extends `${string}${'s' | 'sh' | 'ch' | 'x' | 'z'}`
+  // //   ? `${T}es`
+  // //   : `${T}s`;
 
-const ess = DB.user.mongooseModel.create({ name: 'YO' }).then(async (res) => {
-  res.name = 'NON';
+  // // type Result = Plurial<'chevals'>; // 'a'
 
-  await res.save();
-});
+  const ess = DB.user.mongooseModel.create({ name: 'YO' }).then(async (res) => {
+    res.name = 'NON';
+
+    await res.save();
+  });
+};
