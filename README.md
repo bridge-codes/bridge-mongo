@@ -20,4 +20,36 @@ To follow the development or contribute, join [the Discord](https://discord.gg/y
 If you want any guidance whatsoever with the contribution, don't hesitate to reach out [on Discord](https://discord.gg/yxjrwm7Bfr)!
 
 <h2> <img src="/img/installation.svg" height="20" /> Installation </h2>
+You can use your favorite package manager to install __Bridge-mongo__.
 
+```
+npm i bridge-mongo
+```
+
+### Example
+
+```ts
+import { isError, Schema, mongoose, createDB } from "bridge-mongo"
+
+const user = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  age: Number,
+  additionnalInformation: {
+    likeAnimals: Boolean
+  }
+}, {
+  timestamps: true
+})
+
+const DB = createDB({
+  user
+})
+
+async function create() {
+  DB.user.create({
+    email: "dave@bridge.codes",
+    name: "Dave"
+  })
+}
+```
