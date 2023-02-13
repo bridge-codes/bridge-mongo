@@ -1,5 +1,5 @@
 import { Pretify, StricProperty, PreserverOptionalKeys } from '../utils';
-import { ObjectId, FilterQuery, ClientSession, UpdateQuery } from 'mongoose';
+import { ObjectId, ClientSession, UpdateQuery } from 'mongoose';
 import {
   SchemaConfig,
   DefaultValueProperties,
@@ -18,6 +18,7 @@ import {
   FindOneOptions,
   FindAndUpdateOptions,
   FindAndDeleteOptions,
+  MatchQuery,
 } from './types';
 
 export interface BridgeModelI<
@@ -54,7 +55,7 @@ export interface BridgeModelI<
   >;
 
   find: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
-    filer: FilterQuery<FullModelI>,
+    filer: MatchQuery<FullModelI>,
     proj?: Proj,
     options?: FindOptions<FullModelI>,
   ) => Promise<Array<ApplyProj<FullModelI, Proj>>>;
@@ -69,7 +70,7 @@ export interface BridgeModelI<
   >;
 
   findOne: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
-    filer: FilterQuery<FullModelI>,
+    filer: MatchQuery<FullModelI>,
     proj?: Proj,
     options?: FindOneOptions,
   ) => Promise<
@@ -77,7 +78,7 @@ export interface BridgeModelI<
   >;
 
   findOneAndUpdate: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
-    filter: FilterQuery<FullModelI>,
+    filter: MatchQuery<FullModelI>,
     updateQuery: UpdateQuery<ModelI>,
     options?: FindAndUpdateOptions<Proj, FullModelI>,
   ) => Promise<
@@ -93,7 +94,7 @@ export interface BridgeModelI<
   >;
 
   findOneAndDelete: <Proj extends Projection<Required<FullModelI>> = CompleteProj<FullModelI>>(
-    filter: FilterQuery<FullModelI>,
+    filter: MatchQuery<FullModelI>,
     options?: FindAndDeleteOptions<Proj, FullModelI>,
   ) => Promise<
     ApplyProj<FullModelI, Proj> | { error: { status: 404; name: `${ModelName} not found` } }

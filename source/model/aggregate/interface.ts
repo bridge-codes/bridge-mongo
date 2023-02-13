@@ -1,4 +1,4 @@
-import { convertDBSchemasToDBI, Projection, ApplyProj, MatchQuery } from '../types';
+import { convertDBSchemasToDBI, Projection, ApplyProj, MatchQuery, SortQuery } from '../types';
 import { Pretify, capitalizeFirstLetter } from '../../utils';
 import { PipelineStage, Model as MongooseModel, FilterQuery } from 'mongoose';
 import { SchemaToType, SchemaConfig, Schema as SchemaClass } from '../../schema';
@@ -21,6 +21,10 @@ export interface AggI<
   ) => AggI<SchemasI, ModelName, ApplyProj<ModelI, Proj>>;
 
   match: (matchQuery: MatchQuery<ModelI>) => AggI<SchemasI, ModelName, ModelI>;
+
+  sort: (sortData: SortQuery<ModelI>) => AggI<SchemasI, ModelName, ModelI>;
+
+  limit: (limit: number) => AggI<SchemasI, ModelName, ModelI>;
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // EXEC

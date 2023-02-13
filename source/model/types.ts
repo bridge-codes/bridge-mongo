@@ -69,12 +69,14 @@ export type ApplyProj<ModelI, Proj extends Projection<Required<ModelI>>> = Preti
   }
 >;
 
+export type SortQuery<ModelI> = { [T in keyof ModelI]?: SortOrder };
+
 export type FindAndUpdateOptions<Proj, FullModelI> = {
   projection?: Proj;
   session?: ClientSession;
   returnDocument?: 'before' | 'after';
   new?: boolean;
-  sort?: { [T in keyof FullModelI]?: SortOrder };
+  sort?: SortQuery<FullModelI>;
   timestamps?: boolean;
   overwrite?: boolean;
 };
@@ -82,7 +84,7 @@ export type FindAndUpdateOptions<Proj, FullModelI> = {
 export type FindAndDeleteOptions<Proj, FullModelI> = {
   projection?: Proj;
   session?: ClientSession;
-  sort?: { [T in keyof FullModelI]?: SortOrder };
+  sort?: SortQuery<FullModelI>;
 };
 
 export type FindOneOptions = {
@@ -92,7 +94,7 @@ export type FindOneOptions = {
 export type FindOptions<FullModelI> = {
   limit?: number;
   skip?: number;
-  sort?: { [T in keyof FullModelI]?: SortOrder };
+  sort?: SortQuery<FullModelI>;
   session?: ClientSession;
 };
 
@@ -160,16 +162,21 @@ type OnFieldOperation<Type> = Type extends Array<infer SubType>
         } & {
           [Operator in ArrayComparisonOperator]?: Array<string | RegExp>;
         })
-  : Type;
+  :
+      | Type
+      | ({ $exists?: boolean; $type?: TypeAliases } & {
+          [Operator in '$eq' | '$ne']?: Type;
+        } & {
+          [Operator in ArrayComparisonOperator]?: Array<Type>;
+        });
 
-type RemoveDot<Key> = Key extends `${infer OriginalKey}.${number}` ? OriginalKey : 'whfd';
+type RemoveDot<Key> = Key extends `${infer OriginalKey}.${number}` ? OriginalKey : never;
 
 export type MatchQuery<ModelI> = {
   [Key in keyof ModelI]?: OnFieldOperation<ModelI[Key]>;
 } & {
-  // }; //     : never]?: Data[key] extends Array<infer SubData> ? Filter<SubData> | { $exists?: boolean } : never; //     ? `${key extends string ? key : ''}.${number}` //   [key in keyof Data as Data[key] extends Array<any> // & {
-  [key in `${KeysWithValsOfType<Required<ModelI>, Array<any>> &
-    string}.${number}`]?: ModelI[RemoveDot<key> & keyof ModelI] extends Array<infer SubType>
+  [key in `${KeysWithValsOfType<Required<ModelI>, Array<any>> & string}.${
+    | number}`]?: ModelI[RemoveDot<key> & keyof ModelI] extends Array<infer SubType> | undefined
     ? OnFieldOperation<SubType>
     : 'never';
 } & {
@@ -178,17 +185,20 @@ export type MatchQuery<ModelI> = {
   // EVALUATION
   $expr?: MatchQueryWithExpr<ModelI>;
   $jsonSchema?: Record<string, any>;
-} & {
   $text?: {
     $search?: string;
     $language?: string;
     $caseSensitive?: boolean;
     $diacriticSensitive?: boolean;
   };
+  $where?: any;
 };
 
 /**
  * TO-DO
  *
  * - [ ] Geospatial
+ * - [ ] Bitwise
+ * - [ ] Projection Operators
+ * - [ ] Miscellaneous Operators
  */

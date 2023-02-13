@@ -11,6 +11,10 @@ const testSchema = new Schema(
   {
     sf: { type: Number, required: true },
     ahoui: [String],
+    oooh: {
+      type: [String],
+      required: true,
+    },
     df: { type: Date, default: new Date(), unique: true },
     lolilo: String,
     buffer: Buffer,
@@ -39,7 +43,7 @@ async () => {
 
   // const config = DB.test.configInterface;
 
-  const test = DB.test.create({ sf: 78 });
+  const test = DB.test.create({ sf: 78, oooh: ['df'] });
 
   const user = DB.test.findOne({}, { age: 1 });
 
@@ -52,7 +56,7 @@ async () => {
     },
   );
 
-  // res.
+  DB.test.findOneAndUpdate({}, {});
 
   const ajsd = await DB.test
     .aggregate()
@@ -60,7 +64,8 @@ async () => {
       lolilo: { $in: ['dfd'] },
       $expr: { $gte: ['$normal', '$$df'] },
       sf: { $mod: [7, 79] },
-      'ahoui.8': 'djkf',
+      oooh: 'edfdf',
+      df: { $in: [new Date()] },
     })
     .project({ test: { ahoui: 1 } })
     .paginate(0, 1);

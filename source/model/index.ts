@@ -47,7 +47,7 @@ export class BridgeModel<
 
   find: BridgeModelI<SchemasI, ModelName>['find'] = async (filter, projection, options) => {
     try {
-      return await this.mongooseModel.find(filter, projection || undefined, {
+      return await this.mongooseModel.find(filter as any, projection || undefined, {
         lean: true,
         ...(options || {}),
       });
@@ -73,7 +73,7 @@ export class BridgeModel<
 
   findOne: BridgeModelI<SchemasI, ModelName>['findOne'] = async (filter, projection, options) => {
     try {
-      const res: any = await this.mongooseModel.findOne(filter, projection || undefined, {
+      const res: any = await this.mongooseModel.findOne(filter as any, projection || undefined, {
         lean: true,
         ...(options || {}),
       });
@@ -91,10 +91,14 @@ export class BridgeModel<
     options,
   ) => {
     try {
-      const res: any = await (this.mongooseModel as any).findOneAndUpdate(filter, updateQuery, {
-        lean: true,
-        ...options,
-      });
+      const res: any = await (this.mongooseModel as any).findOneAndUpdate(
+        filter as any,
+        updateQuery,
+        {
+          lean: true,
+          ...options,
+        },
+      );
       if (!res) return { error: { status: 404, name: `${this.modelName} not found` } };
       return res;
     } catch (err) {
@@ -126,7 +130,7 @@ export class BridgeModel<
     options,
   ) => {
     try {
-      const res: any = await this.mongooseModel.findOneAndDelete(filter, options);
+      const res: any = await this.mongooseModel.findOneAndDelete(filter as any, options);
       if (!res) return { error: { status: 404, name: `${this.modelName} not found` } };
       return res;
     } catch (err) {
