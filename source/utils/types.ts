@@ -11,3 +11,7 @@ export type RequiredKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? never 
 
 export type PreserverOptionalKeys<New, Old> = Required<Pick<New, keyof New & RequiredKeys<Old>>> &
   Partial<Pick<New, keyof New & OptionalKeys<Old>>>;
+
+export type KeysWithValsOfType<T, V> = keyof { [P in keyof T as T[P] extends V ? P : never]: P };
+
+export type WithDollar<T extends string> = `$${T}`;

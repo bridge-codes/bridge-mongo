@@ -30,14 +30,14 @@ const testSchema = new Schema(
 );
 
 const DB = createDB({
-  user: userSchema,
-  test: testSchema,
+  User: userSchema,
+  Test: testSchema,
 });
 
 async () => {
-  const res = DB.test.modelInterface;
+  const rese = DB.test.modelInterface;
 
-  const config = DB.test.configInterface;
+  // const config = DB.test.configInterface;
 
   const test = DB.test.create({ sf: 78 });
 
@@ -45,7 +45,25 @@ async () => {
 
   type OJHK = typeof user;
 
-  DB.user.mongooseModel.create({ name: 'df' });
+  const res = await DB.user.mongooseModel.findOneAndUpdate(
+    {},
+    {
+      name: 'df',
+    },
+  );
+
+  // res.
+
+  const ajsd = await DB.test
+    .aggregate()
+    .match({
+      lolilo: { $in: ['dfd'] },
+      $expr: { $gte: ['$normal', '$$df'] },
+      sf: { $mod: [7, 79] },
+      'ahoui.8': 'djkf',
+    })
+    .project({ test: { ahoui: 1 } })
+    .paginate(0, 1);
 
   const dsf = await DB.test.findOne({}, { age: 1, buffer: 1 });
 
