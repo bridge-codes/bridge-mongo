@@ -21,6 +21,8 @@ export type DefaultValueProperties<T extends Record<string, any>> = {
 
 type ConstructorTypeToType<ConstructorType> = ConstructorType extends Array<infer Type>
   ? Array<ConstructorTypeToType<Type>>
+  : ConstructorType extends { enum: readonly (infer EnumType)[] }
+  ? EnumType
   : ConstructorType extends { type: infer Type }
   ? ConstructorTypeToType<Type>
   : ConstructorType extends NumberConstructor

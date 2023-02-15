@@ -1,6 +1,6 @@
 import { Pretify, StricProperty, Plurial } from '../utils';
 import { ObjectId, ClientSession, UpdateQuery } from 'mongoose';
-import { InferSchemaDefFromSchema, Schema as SchemaClass } from '../schema';
+import { InferSchemaDefFromSchema, InferConfigfFromSchema, Schema as SchemaClass } from '../schema';
 import {
   CreateReturnWithErrors,
   Projection,
@@ -12,6 +12,7 @@ import {
   FindAndUpdateOptions,
   FindAndDeleteOptions,
   MatchQuery,
+  IncludeIdAndTimestamps,
 } from './types';
 
 export interface BridgeModelI<
@@ -21,13 +22,19 @@ export interface BridgeModelI<
   Schema extends SchemaClass<any, any> = SchemasI[ModelName],
   ModelI = DBI[Plurial<Lowercase<ModelName>> & keyof DBI],
 > {
-  create: <CreateData extends ModelI>(
+  create: <CreateData extends Omit<ModelI, '_id' | 'updatedAt' | 'createdAt'>>(
     data: StricProperty<CreateData, ModelI>,
     options?: {
       session?: ClientSession;
     },
   ) => Promise<
-    Pretify<CreateReturnWithErrors<InferSchemaDefFromSchema<Schema>, ModelI, ModelName>>
+    Pretify<
+      CreateReturnWithErrors<
+        InferSchemaDefFromSchema<Schema>,
+        IncludeIdAndTimestamps<CreateData, InferConfigfFromSchema<Schema>>,
+        ModelName
+      >
+    >
   >;
 
   find: <Proj extends Projection<Required<ModelI>> = CompleteProj<ModelI>>(

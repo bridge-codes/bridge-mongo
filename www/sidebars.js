@@ -18,7 +18,23 @@ const sidebars = {
 
   // But you can create a sidebar manually
 
-  tutorialSidebar: ['intro'],
+  tutorialSidebar: [
+    'intro',
+    'quickstart',
+    'schema',
+    'model',
+    'connection',
+    {
+      type: 'category',
+      label: 'Queries',
+      items: ['queries/find'],
+    },
+    {
+      type: 'category',
+      label: 'Aggregate',
+      items: ['aggregate/intro', 'aggregate/project', 'aggregate/paginate', 'aggregate/exec'],
+    },
+  ],
 };
 
 module.exports = sidebars;
