@@ -1,6 +1,6 @@
 {
   "name": "bridge-mongo",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A mongodb ORM on top of mongoose that match perfectly with the Bridge framework",
   "main": "dist/source/index.js",
   "types": "dist/source/index.d.ts",
