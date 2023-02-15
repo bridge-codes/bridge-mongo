@@ -1,4 +1,4 @@
-import { BridgeModel, FullModelIGen } from './model';
+import { BridgeModel } from './model';
 import { isError } from './utils';
 import { Schema } from './schema';
 

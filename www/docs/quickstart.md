@@ -97,5 +97,6 @@ const DB = createDB({
 
 async () => {
     const user = await DB.user.create({ name: 'Nab' })
+    //     ^?
 }
 ```

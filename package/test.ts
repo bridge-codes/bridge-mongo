@@ -1,23 +1,23 @@
 import { createDB, Schema, mongoose } from './source';
 
-const userSchema = new Schema({
-  name: { type: String, required: true },
-  email: String,
-  age: { type: Number, default: 18 },
-  job: { type: String, enum: ['developer', 'designer'] as const },
-  settings: {
-    isActive: Boolean,
-  },
-});
-
-const postSchema = new Schema(
+const userSchema = new Schema(
   {
-    text: { type: String, required: true },
-    userId: { type: mongoose.Types.ObjectId, req: true },
-    likes: Number,
+    name: { type: String, required: true },
+    email: String,
+    age: { type: Number, default: 18 },
+    job: { type: String, enum: ['developer', 'designer'] as const },
+    settings: {
+      isActive: Boolean,
+    },
   },
-  { timestamps: true },
+  { timestamps: false },
 );
+
+const postSchema = new Schema({
+  text: { type: String, required: true },
+  userId: { type: mongoose.Types.ObjectId, req: true },
+  likes: Number,
+});
 
 const DB = createDB({
   User: userSchema,
@@ -25,9 +25,7 @@ const DB = createDB({
 });
 
 async () => {
-  const model = DB.user.modelInterface;
-
-  const res = DB.user.create({ name: 'jean', job: 'designer' });
+  const user = await DB.user.create({ name: 'Salut' });
 };
 
 // const testSchema = new Schema(

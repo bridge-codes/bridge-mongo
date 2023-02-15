@@ -25,22 +25,24 @@ import {
   InferConfigfFromSchema,
 } from '../schema';
 
-import mongoose from 'mongoose';
-
 export type CreateReturnWithErrors<
-  Schema extends Record<string, any>,
+  Schema extends SchemaClass<any, any>,
   ReturnData,
   ModelName extends string,
-> = UniqueProperties<Schema> extends never
+> = UniqueProperties<InferSchemaDefFromSchema<Schema>> extends never
   ? ReturnData
   : ReturnData | { error: { status: 409; name: `${ModelName} already exists`; data: any } };
 
-export type IncludeIdAndTimestamps<
-  Data,
-  Config extends SchemaConfig,
-> = Config['timestamps'] extends true
-  ? { _id: ObjectId; createdAt: Date; updatedAt: Date } & Data
-  : { _id: ObjectId } & Data;
+export type IncludeIdAndTimestampsAndDefaultProperties<
+  Model,
+  Schema extends SchemaClass<any, any>,
+  Data = Model,
+> = (InferConfigfFromSchema<Schema>['timestamps'] extends true
+  ? { createdAt: Date; updatedAt: Date }
+  : {}) & { _id: ObjectId } & Required<
+    Pick<Model, DefaultValueProperties<InferSchemaDefFromSchema<Schema>> & keyof Model>
+  > &
+  Data;
 
 export type Projection<Model> = {
   [T in keyof Model]?: NonNullable<Model[T]> extends ObjectId | Date
@@ -65,21 +67,13 @@ export type ApplyProj<Model, Proj extends Projection<Model>> = Pretify<
   { _id: ObjectId } & ExtractModelFromProj<Model, Proj>
 >;
 
-export type FullModelIGen<
-  ModelI extends Pretify<SchemaToType<SchemaDef>>,
-  SchemaDef extends SchemaDefinition,
-  Config extends SchemaConfig,
-> = Pretify<
-  IncludeIdAndTimestamps<ModelI & Required<Pick<ModelI, DefaultValueProperties<SchemaDef>>>, Config>
->;
-
 export type CompleteProj<Model> = {
   [T in keyof Required<Model>]: 1;
 };
 
 export type convertDBSchemasToDBI<DBSchemasI extends Record<string, SchemaClass<any, any>>> = {
   [ModelName in keyof DBSchemasI as Plurial<Lowercase<ModelName & string>>]: Pretify<
-    IncludeIdAndTimestamps<
+    IncludeIdAndTimestampsAndDefaultProperties<
       SchemaToType<InferSchemaDefFromSchema<DBSchemasI[ModelName]>> &
         Required<
           Pick<

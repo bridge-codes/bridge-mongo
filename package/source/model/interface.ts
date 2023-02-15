@@ -12,7 +12,7 @@ import {
   FindAndUpdateOptions,
   FindAndDeleteOptions,
   MatchQuery,
-  IncludeIdAndTimestamps,
+  IncludeIdAndTimestampsAndDefaultProperties,
 } from './types';
 
 export interface BridgeModelI<
@@ -30,8 +30,8 @@ export interface BridgeModelI<
   ) => Promise<
     Pretify<
       CreateReturnWithErrors<
-        InferSchemaDefFromSchema<Schema>,
-        IncludeIdAndTimestamps<CreateData, InferConfigfFromSchema<Schema>>,
+        Schema,
+        IncludeIdAndTimestampsAndDefaultProperties<ModelI, Schema, CreateData>,
         ModelName
       >
     >
