@@ -1,0 +1,49 @@
+---
+title: 'Next.js Image optimization error on Netlify'
+publishedAt: '2022-04-16'
+excerpt: 'Next.js has a built-in Image component that comes with a lot of performance optimization features when you are using it.'
+cover_image: 'path/to/where/image/is/stored'
+---
+
+rest of the content falls here
+oJkjdf
+
+```ts twoslash
+
+const x = "12"
+    //^?
+
+```
+
+
+
+``` 
+npx create-bridge-app@latest
+# or
+pnpm create bridge-app
+# or
+yarn create bridge-app
+```
+
+
+```ts
+import { handler, initBridge } from 'bridge';
+import express from 'express';
+
+const port = 8080;
+const routes = { 
+    hello: handler({ 
+        method: 'GET', 
+        resolve: () => 'hello' 
+    }) 
+};
+
+const app = express();
+
+app.use('', initBridge({ routes: routes }).expressMiddleware());
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
+```
+
