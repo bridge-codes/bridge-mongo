@@ -1,18 +1,19 @@
 import { convertDBSchemasToDBI } from '../types';
-import { Pretify } from '../../utils';
+import { Pretify, Plurial } from '../../utils';
 import { PipelineStage, Model as MongooseModel } from 'mongoose';
-import { Schema as SchemaClass } from '../../schema';
 import { AggI } from './interface';
 
 export class Aggregate<
   SchemasI extends Record<string, any>,
   ModelName extends keyof SchemasI & string,
-  DBI extends Record<keyof SchemasI, any> = Pretify<convertDBSchemasToDBI<SchemasI>>,
-  Schema extends SchemaClass<any, any> = SchemasI[ModelName],
-  ModelI extends Record<keyof Schema, any> = DBI[ModelName],
+  DBI = Pretify<convertDBSchemasToDBI<SchemasI>>,
+  ModelI = DBI[Plurial<Lowercase<ModelName>> & keyof DBI],
 > implements AggI<SchemasI, ModelName>
 {
-  constructor(private mongoModel: MongooseModel<ModelI>, private pipe: PipelineStage[] = []) {}
+  constructor(
+    private mongoModel: MongooseModel<ModelI> = {} as any,
+    private pipe: PipelineStage[] = [],
+  ) {}
 
   /**
    * Returns the current pipeline
@@ -23,13 +24,41 @@ export class Aggregate<
   // STAGES
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  project: AggI<SchemasI, ModelName>['project'] = () => ({} as any);
+  project: AggI<SchemasI, ModelName>['project'] = (proj) =>
+    new Aggregate(this.mongoModel, [...this.pipe, { $project: proj }]) as any;
 
-  match: AggI<SchemasI, ModelName>['match'] = () => ({} as any);
+  match: AggI<SchemasI, ModelName>['match'] = (match) =>
+    new Aggregate(this.mongoModel, [...this.pipe, { $match: match as any }]) as any;
 
-  sort: AggI<SchemasI, ModelName>['sort'] = () => ({} as any);
+  unset: AggI<SchemasI, ModelName>['unset'] = (unset) =>
+    new Aggregate(this.mongoModel, [...this.pipe, { $unset: unset as any }]) as any;
 
-  limit: AggI<SchemasI, ModelName>['limit'] = () => ({} as any);
+  sort: AggI<SchemasI, ModelName>['sort'] = (sort) =>
+    new Aggregate(this.mongoModel, [...this.pipe, { $sort: sort } as any]) as any;
+
+  limit: AggI<SchemasI, ModelName>['limit'] = (limit) =>
+    new Aggregate(this.mongoModel, [...this.pipe, { $limit: limit } as any]) as any;
+
+  unwind: AggI<SchemasI, ModelName>['unwind'] = (unwind) =>
+    new Aggregate(this.mongoModel, [...this.pipe, { $unwind: unwind } as any]) as any;
+
+  lookup: AggI<SchemasI, ModelName>['lookup'] = (lookupQuery: any, subAggregate?: any) => {
+    if ('localField' in lookupQuery) {
+      return new Aggregate(this.mongoModel, [...this.pipe, { $lookup: lookupQuery } as any]) as any;
+    }
+
+    const lookup: typeof lookupQuery & { pipeline: PipelineStage[] } = { ...lookupQuery };
+
+    let paramLookupAggregate: any = {};
+
+    Object.keys(lookupQuery.let || {}).forEach((key) => {
+      paramLookupAggregate[key] = `$$${key}`;
+    });
+
+    lookup.pipeline = subAggregate(new Aggregate(), paramLookupAggregate).pipe;
+
+    return new Aggregate(this.mongoModel, [...this.pipe, { $lookup: lookupQuery }]) as any;
+  };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // EXEC
@@ -70,5 +99,3 @@ export class Aggregate<
     };
   };
 }
-
-type zh = Lowercase<'Ahh'>;

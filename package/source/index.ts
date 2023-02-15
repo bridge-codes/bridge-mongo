@@ -17,5 +17,3 @@ const createDB = <DBSchemasI extends Record<string, Schema<any, any>>>(
 
 export { Schema, createDB, isError };
 export * as mongoose from 'mongoose';
-
-type test = Lowercase<string>;

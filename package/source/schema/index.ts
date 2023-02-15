@@ -8,8 +8,6 @@ export class Schema<
   constructor(public schemaDef: SchemaDef, public config?: Config) {}
 }
 
-export * from './types';
-
 export type InferSchemaDefFromSchema<SchemaI extends Schema<any, any>> = SchemaI extends Schema<
   infer SchemaDef,
   any
@@ -23,3 +21,5 @@ export type InferConfigfFromSchema<SchemaI extends Schema<any, any>> = SchemaI e
 >
   ? Config
   : { timestamps: false };
+
+export * from './types';

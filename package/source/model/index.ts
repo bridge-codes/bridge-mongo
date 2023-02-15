@@ -1,6 +1,6 @@
 import { BridgeModelI } from './interface';
 import { convertDBSchemasToDBI } from './types';
-import { Pretify } from '../utils';
+import { Pretify, Plurial } from '../utils';
 import {
   Model as MongooseModel,
   model as createMongooseModel,
@@ -12,14 +12,15 @@ import { Schema as SchemaClass } from '../schema';
 export class BridgeModel<
   SchemasI extends Record<string, any>,
   ModelName extends keyof SchemasI & string,
-  DBI extends Record<keyof SchemasI, any> = Pretify<convertDBSchemasToDBI<SchemasI>>,
+  DBI = Pretify<convertDBSchemasToDBI<SchemasI>>,
   Schema extends SchemaClass<any, any> = SchemasI[ModelName],
-  ModelI extends Record<keyof Schema, any> = DBI[ModelName],
+  ModelI = DBI[Plurial<Lowercase<ModelName>> & keyof DBI],
 > implements BridgeModelI<SchemasI, ModelName>
 {
   public mongooseModel: MongooseModel<ModelI>;
 
   public modelInterface!: ModelI;
+  public DBI!: DBI;
 
   constructor(schema: Schema, public modelName: ModelName) {
     const mongooseSchema = new MongooseSchema(
@@ -29,8 +30,7 @@ export class BridgeModel<
     this.mongooseModel = createMongooseModel<ModelI>(modelName, mongooseSchema);
   }
 
-  public aggregate = () =>
-    new Aggregate<SchemasI, ModelName, DBI, Schema, ModelI>(this.mongooseModel);
+  public aggregate = () => new Aggregate<SchemasI, ModelName, DBI, ModelI>(this.mongooseModel);
 
   create: BridgeModelI<SchemasI, ModelName>['create'] = async (data) => {
     try {
@@ -154,5 +154,4 @@ export class BridgeModel<
   };
 }
 
-export * from './old';
 export * from './types';

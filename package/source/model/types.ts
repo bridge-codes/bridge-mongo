@@ -1,4 +1,12 @@
-import { Pretify, PreserverOptionalKeys, WithDollar, KeysWithValsOfType } from '../utils';
+import {
+  Pretify,
+  PreserverOptionalKeys,
+  WithDollar,
+  KeysWithValOfType,
+  ExtractFromPath,
+  FlatPath,
+  Plurial,
+} from '../utils';
 import {
   ObjectId,
   SchemaDefinition,
@@ -14,7 +22,10 @@ import {
   SchemaToType,
   Schema as SchemaClass,
   InferSchemaDefFromSchema,
+  InferConfigfFromSchema,
 } from '../schema';
+
+import mongoose from 'mongoose';
 
 export type CreateReturnWithErrors<
   Schema extends Record<string, any>,
@@ -32,20 +43,27 @@ export type IncludeIdAndTimestamps<
   : { _id: ObjectId } & Data;
 
 export type Projection<Model> = {
-  [T in keyof Model]?: Model[T] extends ObjectId | Date
+  [T in keyof Model]?: NonNullable<Model[T]> extends ObjectId | Date
     ? 1
-    : Model[T] extends Record<any, any>
+    : NonNullable<Model[T]> extends Record<any, any>
     ? 1 | Projection<Model[T]>
     : 1;
 };
 
-export type ExtractModelIFromProj<Model, Proj extends Projection<Model> | undefined> = {
-  [T in keyof Proj & keyof Model]: Proj[T] extends 1
-    ? Model[T]
-    : Proj[T] extends Projection<Model[T]>
-    ? Pretify<ExtractModelIFromProj<Model[T], Proj[T]>>
-    : never;
-};
+export type ExtractModelFromProj<Model, Proj extends Projection<Model>> = PreserverOptionalKeys<
+  {
+    [T in keyof Proj & keyof Model]: Proj[T] extends 1
+      ? Model[T]
+      : Proj[T] extends Projection<NonNullable<Model[T]>>
+      ? Pretify<ApplyProj<NonNullable<Model[T]>, Proj[T]>>
+      : never;
+  },
+  Model
+>;
+
+export type ApplyProj<Model, Proj extends Projection<Model>> = Pretify<
+  { _id: ObjectId } & ExtractModelFromProj<Model, Proj>
+>;
 
 export type FullModelIGen<
   ModelI extends Pretify<SchemaToType<SchemaDef>>,
@@ -60,14 +78,19 @@ export type CompleteProj<Model> = {
 };
 
 export type convertDBSchemasToDBI<DBSchemasI extends Record<string, SchemaClass<any, any>>> = {
-  [T in keyof DBSchemasI]: Pretify<SchemaToType<InferSchemaDefFromSchema<DBSchemasI[T]>>>;
+  [ModelName in keyof DBSchemasI as Plurial<Lowercase<ModelName & string>>]: Pretify<
+    IncludeIdAndTimestamps<
+      SchemaToType<InferSchemaDefFromSchema<DBSchemasI[ModelName]>> &
+        Required<
+          Pick<
+            SchemaToType<InferSchemaDefFromSchema<DBSchemasI[ModelName]>>,
+            DefaultValueProperties<DBSchemasI[ModelName]>
+          >
+        >,
+      InferConfigfFromSchema<DBSchemasI[ModelName]>
+    >
+  >;
 };
-
-export type ApplyProj<ModelI, Proj extends Projection<Required<ModelI>>> = Pretify<
-  PreserverOptionalKeys<ExtractModelIFromProj<Required<ModelI>, Proj>, ModelI> & {
-    _id: ObjectId;
-  }
->;
 
 export type SortQuery<ModelI> = { [T in keyof ModelI]?: SortOrder };
 
@@ -127,12 +150,12 @@ type ArrayComparisonOperator = '$in' | '$nin';
 type DirectLogicalOperator = '$not';
 type ArrayLogicalOperator = '$and' | '$or' | '$nor';
 
-type DollarKeys<ModelI> = WithDollar<keyof ModelI extends string ? keyof ModelI : ''>;
+type DollarKeys<ModelI> = WithDollar<keyof ModelI & string>;
 
 type MatchQueryWithExpr<ModelI> = MatchQuery<ModelI> & {
   [Operator in DirectComparisonOperator]?: [
     DollarKeys<ModelI> | `$$${string}` | ConditionalExpressionOperator,
-    DollarKeys<ModelI> | `$$${string}` | ConditionalExpressionOperator,
+    DollarKeys<ModelI> | `$$${string}` | ConditionalExpressionOperator | any, // To be match to a variable
   ];
 };
 
@@ -173,10 +196,10 @@ type OnFieldOperation<Type> = Type extends Array<infer SubType>
 type RemoveDot<Key> = Key extends `${infer OriginalKey}.${number}` ? OriginalKey : never;
 
 export type MatchQuery<ModelI> = {
-  [Key in keyof ModelI]?: OnFieldOperation<ModelI[Key]>;
+  [Key in FlatPath<ModelI>]?: OnFieldOperation<ExtractFromPath<ModelI, Key>>;
 } & {
-  [key in `${KeysWithValsOfType<Required<ModelI>, Array<any>> & string}.${
-    | number}`]?: ModelI[RemoveDot<key> & keyof ModelI] extends Array<infer SubType> | undefined
+  [key in `${KeysWithValOfType<Required<ModelI>, Array<any>> & string}.${
+    | number}`]?: ModelI[RemoveDot<key> & keyof ModelI] extends NonNullable<Array<infer SubType>>
     ? OnFieldOperation<SubType>
     : 'never';
 } & {
