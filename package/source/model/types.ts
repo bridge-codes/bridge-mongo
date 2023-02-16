@@ -176,7 +176,7 @@ type OnFieldOperation<Type> = Type extends Array<infer SubType>
   :
       | Type
       | ({ $exists?: boolean; $type?: TypeAliases } & {
-          [Operator in '$eq' | '$ne']?: Type;
+          [Operator in DirectComparisonOperator]?: Type;
         } & {
           [Operator in ArrayComparisonOperator]?: Array<Type>;
         });

@@ -31,11 +31,34 @@ const DB = createDB({
 });
 
 async () => {
-  const user = await DB.user.create({ name: 'ui', age: 89 });
-
-  if (isError(user)) return;
-
+  const user = await DB.user.create({ name: 'Nab' });
+  //     ^?
   const post = await DB.post.findOne({ userId: user._id });
+  //      ^?
+  const users = await DB.user.find({ age: { $gt: 21 } }, { name: 1 });
+  //      ^?
+  // Fetching all users that have created post with their post
+  const creators = await DB.user
+    .aggregate()
+    .project({ name: 1 })
+    .lookup({ from: 'posts', localField: '_id', foreignField: 'userId' })
+    .match({ 'posts.0': { $exists: true } })
+    .exec();
+
+  console.log(creators);
+
+  // Fetching posts
+  const posts = await DB.post
+    .aggregate()
+    .project({ text: 1, createdAt: 1 })
+    // .match({ createdAt: { $gt: new Date() } })
+    .lookup({ from: 'posts', let: { userId: '$_id' } }, (post, { userId }) =>
+      post.match({ $expr: { $eq: ['$userId', userId] } }).project({ text: 1 }),
+    )
+    .match({ 'posts.0': { $exists: true } })
+    .exec();
+
+  console.log(posts);
 
   const res = await DB.post
     .aggregate()

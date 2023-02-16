@@ -68,6 +68,8 @@ launch();
 
 ## Start enjoying type safety
 
+**Some Queries examples:**
+
 ```ts twoslash title='index.ts'
 import { createDB, Schema, mongoose } from 'bridge-mongo';
 
@@ -98,13 +100,81 @@ const DB = createDB({
   Post: postSchema,
 });
 // ---cut---
+import { isError } from 'bridge-mongo';
 
 async () => {
-    const userCreated = await DB.user.create({ name: 'Nab' })
+    const user = await DB.user.create({ name: 'Nab' });
     //     ^?
+    const post = await DB.post.findOne({ userId: user._id }, {text: 1});
+    //      ^?
+    if (!isError(post)) console.log(post)
+    //                               ^?
 
+    const posts = await DB.post.find({ likes: { $gt: 10 }});
+    //      ^?
 
-    // const user = await DB.user.findOne({ name: 'Nab' })
-
+    const res = await DB.user.findByIdAndUpdate(user._id, { name: 'Neo' }, { projection: { name: 1} })
+    //     ^?
 }
+```
+
+**Some Aggregate examples:**
+
+```ts twoslash title='index.ts'
+import { createDB, Schema, mongoose } from 'bridge-mongo';
+
+// Defining a User Schema
+const userSchema = new Schema({
+  name: { type: String, required: true },
+  email: String,
+  age: { type: Number, default: 18 },
+  job: { type: String, enum: ['developer', 'designer'] as const },
+  settings: {
+    isActive: Boolean,
+  },
+});
+
+// Defining a Post Schema
+const postSchema = new Schema(
+  {
+    text: { type: String, required: true },
+    userId: { type: mongoose.Types.ObjectId, req: true },
+    likes: Number,
+  },
+  { timestamps: true },
+);
+
+// The keys correspond to the model Name
+const DB = createDB({
+  User: userSchema,
+  Post: postSchema,
+});
+// ---cut---
+async () => {
+    // Fetching all users that have created post with their post
+    const creators = await DB.user
+      .aggregate()
+      .project({ name: 1 })
+      .lookup({ from: 'posts', localField: '_id', foreignField: 'userId' })
+      .match({ 'posts.0': { $exists: true } })
+      .exec();
+
+    console.log(creators);
+    //            ^?
+
+
+    // Fetching all users that have created post with their post with a subPipeline
+    const creators2 = await DB.user
+      .aggregate()
+      .project({ name: 1 })
+      .lookup({ from: 'posts', let: { userId: '$_id' } }, (post, { userId }) =>
+        post.match({ $expr: { $eq: ['$userId', userId] } }).project({ text: 1 }),
+      )
+      .match({ 'posts.0': { $exists: true } })
+      .exec();
+
+    console.log(creators2);
+    //            ^?
+}
+
 ```
