@@ -5,7 +5,7 @@
   "main": "dist/source/index.js",
   "types": "dist/source/index.d.ts",
   "bugs": "https://github.com/bridge-codes/bridge-mongo/issues",
-  "homepage": "https://bridge.codes",
+  "homepage": "https://mongo.bridge.codes",
   "files": [
     "/dist"
   ],

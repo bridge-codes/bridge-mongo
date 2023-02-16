@@ -175,6 +175,27 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
       },
+      metadata: [
+        { content: 'https://bridge.codes/twitter.png', name: 'twitter:image' },
+        { content: 'https://bridge.codes/twitter.png', property: 'og:image' },
+        {
+          content: 'The Type Safe MongoDB ORM',
+          name: 'description',
+        },
+        {
+          content: 'The Type Safe MongoDB ORM',
+          property: 'og:description',
+        },
+        {
+          content: 'max-snippet:-1, max-image-preview:large, max-video-preview:-1',
+          name: 'robots',
+        },
+        { content: 'width=device-width, initial-scale=1.0', name: 'viewport' },
+        { content: '@vercel', name: 'twitter:site' },
+        { content: 'Bridge', name: 'apple-mobile-web-app-title' },
+        { content: 'var(--geist-background)', name: 'theme-color' },
+        { content: '#000000', name: 'msapplication-TileColor' },
+      ],
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
