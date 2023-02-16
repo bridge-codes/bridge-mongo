@@ -68,6 +68,10 @@ launch();
 
 ## Start enjoying type safety
 
+You can enjoy the benefits of **total type safety** and guidance through TypeScript. The fully typed query results and error handling provided by bridge-mongo make it easy to write correct, efficient queries with confidence.
+
+ Read the documentation to get started or get a look to the examples below.
+
 **Some Queries examples:**
 
 ```ts twoslash title='index.ts'
@@ -103,18 +107,18 @@ const DB = createDB({
 import { isError } from 'bridge-mongo';
 
 async () => {
-    const user = await DB.user.create({ name: 'Nab' });
-    //     ^?
-    const post = await DB.post.findOne({ userId: user._id }, {text: 1});
-    //      ^?
-    if (!isError(post)) console.log(post)
-    //                               ^?
+  const user = await DB.user.create({ name: 'Nab' });
+  //     ^?
+  const post = await DB.post.findOne({ userId: user._id }, {text: 1});
+  //      ^?
+  if (!isError(post)) console.log(post)
+  //                               ^?
 
-    const posts = await DB.post.find({ likes: { $gt: 10 }});
-    //      ^?
+  const posts = await DB.post.find({ likes: { $gt: 10 }});
+  //      ^?
 
-    const res = await DB.user.findByIdAndUpdate(user._id, { name: 'Neo' }, { projection: { name: 1} })
-    //     ^?
+  const res = await DB.user.findByIdAndUpdate(user._id, { name: 'Neo' }, { projection: { name: 1 } })
+  //     ^?
 }
 ```
 
@@ -151,30 +155,40 @@ const DB = createDB({
 });
 // ---cut---
 async () => {
-    // Fetching all users that have created post with their post
-    const creators = await DB.user
-      .aggregate()
-      .project({ name: 1 })
-      .lookup({ from: 'posts', localField: '_id', foreignField: 'userId' })
-      .match({ 'posts.0': { $exists: true } })
-      .exec();
+  
+  // Fetching all users that have created post with their posts
+  const creators = await DB.user
+    .aggregate()
+    .project({ name: 1 })
+    .lookup({ from: 'posts', localField: '_id', foreignField: 'userId' })
+    .match({ 'posts.0': { $exists: true } })
+    .exec();
 
-    console.log(creators);
-    //            ^?
+  console.log(creators);
+  //            ^?
 
 
-    // Fetching all users that have created post with their post with a subPipeline
-    const creators2 = await DB.user
-      .aggregate()
-      .project({ name: 1 })
-      .lookup({ from: 'posts', let: { userId: '$_id' } }, (post, { userId }) =>
-        post.match({ $expr: { $eq: ['$userId', userId] } }).project({ text: 1 }),
-      )
-      .match({ 'posts.0': { $exists: true } })
-      .exec();
+  // Fetching all posts from the last 24 hours with their author only if he's >= 21 years old
 
-    console.log(creators2);
-    //            ^?
+  const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+
+  const posts = await DB.post
+    .aggregate()
+    .project({ text: 1, createdAt: 1, userId: 1 })
+    .match({ createdAt: { $gt: yesterday } })
+    .lookup({ from: 'users', let: { userId: '$userId' }, as: 'user' }, (user, { userId }) =>
+      user
+        .match({ $expr: { $eq: ['$_id', userId] }, age: { $gte: 21 } })
+        .project({ name: 1 })
+        .limit(1),
+    )
+    .unwind('$user')
+    .unset('userId')
+    .exec();
+
+  console.log(posts);
+  //            ^?
+
 }
 
 ```

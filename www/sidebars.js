@@ -34,6 +34,7 @@ const sidebars = {
       label: 'Aggregate',
       items: ['aggregate/intro', 'aggregate/project', 'aggregate/paginate', 'aggregate/exec'],
     },
+    'contributing',
   ],
 };
 

@@ -54,7 +54,7 @@ export interface AggI<
     as?: AS;
     localField: LocalField;
     foreignField: ForeignField;
-  }): AggI<SchemasI, ModelName, ModelI & { [P in AS]: DBI[From][] }>;
+  }): AggI<SchemasI, ModelName, Pretify<ModelI & { [P in AS]: DBI[From][] }>>;
 
   lookup<
     From extends keyof DBI & string,
@@ -71,7 +71,7 @@ export interface AggI<
       p1: AggI<SchemasI, ModelName, DBI[From]>,
       p2: { [key in keyof Let]: `$$${key & string}` },
     ) => AggI<SchemasI, ModelName, NewModel>,
-  ): AggI<SchemasI, ModelName, ModelI & { [P in AS]: NewModel[] }>;
+  ): AggI<SchemasI, ModelName, Pretify<ModelI & { [P in AS]: NewModel[] }>>;
 
   unwind<
     KeyOfArrayToUnwind extends KeysWithValOfType<ModelI, Array<any>> & string,

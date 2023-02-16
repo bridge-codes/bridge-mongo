@@ -47,18 +47,23 @@ async () => {
 
   console.log(creators);
 
+  const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
   // Fetching posts
   const posts = await DB.post
     .aggregate()
-    .project({ text: 1, createdAt: 1 })
-    // .match({ createdAt: { $gt: new Date() } })
-    .lookup({ from: 'posts', let: { userId: '$_id' } }, (post, { userId }) =>
-      post.match({ $expr: { $eq: ['$userId', userId] } }).project({ text: 1 }),
+    .project({ text: 1, createdAt: 1, userId: 1 })
+    .match({ createdAt: { $gt: yesterday } })
+    .lookup({ from: 'users', let: { userId: '$userId' } }, (user, { userId }) =>
+      user
+        .match({ $expr: { $eq: ['$_id', userId] } })
+        .project({ name: 1 })
+        .limit(1),
     )
-    .match({ 'posts.0': { $exists: true } })
+    .unwind('$users')
     .exec();
 
   console.log(posts);
+  //            ^?
 
   const res = await DB.post
     .aggregate()
