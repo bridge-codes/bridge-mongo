@@ -61,7 +61,24 @@ const config = {
       },
     ],
   ],
-
+  plugins: [
+    async function myPlugin() {
+      return {
+        name: 'docusaurus-tailwindcss',
+        configurePostCss(postcssOptions) {
+          // Appends TailwindCSS, AutoPrefixer & CSSNano.
+          /* eslint-disable @typescript-eslint/no-var-requires */
+          postcssOptions.plugins.push(require('tailwindcss'));
+          postcssOptions.plugins.push(require('autoprefixer'));
+          if (process.env.NODE_ENV === 'production') {
+            postcssOptions.plugins.push(require('cssnano'));
+          }
+          /* eslint-enable @typescript-eslint/no-var-requires */
+          return postcssOptions;
+        },
+      };
+    },
+  ],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -73,10 +90,11 @@ const config = {
         },
       },
       navbar: {
-        title: 'My Site',
+        title: 'Bridge Mongo',
         logo: {
           alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          src: 'img/bridge-mongo.svg',
+          width: 30,
         },
         items: [
           {
@@ -91,11 +109,24 @@ const config = {
             label: 'Quickstart',
             to: '/docs/quickstart',
           },
-          // { to: '/blog', label: 'Blog', position: 'left' },
+
           {
             href: 'https://github.com/bridge-codes/bridge-mongo',
-            label: 'GitHub',
             position: 'right',
+            className: 'header-social-link header-github-link',
+            'aria-label': 'GitHub',
+          },
+          {
+            href: 'https://twitter.com/bridge_codes',
+            position: 'right',
+            className: 'header-social-link header-twitter-link',
+            'aria-label': 'Twitter',
+          },
+          {
+            href: 'https://discord.gg/yxjrwm7Bfr',
+            position: 'right',
+            className: 'header-social-link header-discord-link',
+            'aria-label': 'Discord',
           },
         ],
       },

@@ -27,13 +27,30 @@ const sidebars = {
     {
       type: 'category',
       label: 'Queries',
-      items: ['queries/find'],
+      collapsed: false,
+      items: ['create', 'find', 'update', 'delete', 'aggregate', 'populate'],
     },
-    {
-      type: 'category',
-      label: 'Aggregate',
-      items: ['aggregate/intro', 'aggregate/project', 'aggregate/paginate', 'aggregate/exec'],
-    },
+    'errors',
+    // {
+    //   type: 'category',
+    //   label: 'Queries',
+    //   collapsed: false,
+    //   items: [
+    //     'queries/find',
+    //     'queries/findById',
+    //     'queries/findOne',
+    //     'queries/findByIdAndUpdate',
+    //     'queries/findOneAndUpdate',
+    //     'queries/findByIdAndDelete',
+    //     'queries/findOneAndDelete',
+    //   ],
+    // },
+    // {
+    //   type: 'category',
+    //   label: 'Aggregate',
+    //   collapsed: false,
+    //   items: ['aggregate/intro', 'aggregate/project', 'aggregate/paginate', 'aggregate/exec'],
+    // },
     'contributing',
   ],
 };

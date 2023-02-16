@@ -82,7 +82,7 @@ const userSchema = new Schema({
   name: { type: String, required: true },
   email: String,
   age: { type: Number, default: 18 },
-  job: { type: String, enum: ['developer', 'designer'] as const },
+  job: { type: String, enum: ['developer', 'designer'] },
   settings: {
     isActive: Boolean,
   },
@@ -132,7 +132,7 @@ const userSchema = new Schema({
   name: { type: String, required: true },
   email: String,
   age: { type: Number, default: 18 },
-  job: { type: String, enum: ['developer', 'designer'] as const },
+  job: { type: String, enum: ['developer', 'designer'] },
   settings: {
     isActive: Boolean,
   },
@@ -167,7 +167,6 @@ async () => {
   console.log(blogers);
   //            ^?
 
-
   // Fetching all posts from the last 24 hours with their author only if he's >= 21 years old
 
   const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
@@ -190,5 +189,8 @@ async () => {
   //            ^?
 
 }
-
 ```
+
+:::info
+Bridge-mongo is constantly evolving and adding new features to provide a fully typed, robust, and easy-to-use interface for interacting with MongoDB. While many essential functions are already implemented, there are still many more features that can be added to meet specific use cases. If you are interested in contributing or discussing features that you'd like to see implemented, you can join the [Bridge-mongo Discord server](https://discord.com/invite/yxjrwm7Bfr) and be a part of the community.
+:::

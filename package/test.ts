@@ -1,4 +1,11 @@
-import { createDB, Schema, mongoose, isError } from './source';
+import { createDB, Schema, mongoose, isError, ObjectId } from './source';
+
+const user3Schema = new Schema(
+  {
+    name: String,
+  },
+  { timestamps: true },
+);
 
 // Defining a User Schema
 const userSchema = new Schema({
