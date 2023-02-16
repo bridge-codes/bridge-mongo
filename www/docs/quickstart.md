@@ -14,7 +14,11 @@ pnpm add bridge-mongo
 
 ## Define your Schemas
 
-```ts twoslash
+Defining your schemas in bridge-mongo is just as easy as it is with Mongoose. You can define your schemas using Mongoose's schema syntax, and then use the createDB function to create your models.
+
+When you use `createDB`, bridge-mongo will automatically create and register each model with Mongoose using the keys from your schema object as the model names. This means you can define all of your schemas in one place and have them automatically created and registered as models for you.
+
+```ts twoslash title='index.ts'
 import { createDB, Schema, mongoose } from 'bridge-mongo';
 
 // Defining a User Schema
@@ -49,7 +53,7 @@ const DB = createDB({
 
 Connecting to your MongoDB database using bridge-mongo is just as easy as it is with Mongoose. In fact, you can import `mongoose` directly from bridge-mongo and use its connect function to connect to your database.
 
-```ts twoslash
+```ts twoslash title='index.ts'
 import { mongoose } from 'bridge-mongo';
 
 const launch = async () => {
@@ -64,7 +68,7 @@ launch();
 
 ## Start enjoying type safety
 
-```ts twoslash
+```ts twoslash title='index.ts'
 import { createDB, Schema, mongoose } from 'bridge-mongo';
 
 // Defining a User Schema
@@ -96,7 +100,7 @@ const DB = createDB({
 // ---cut---
 
 async () => {
-    const user = await DB.user.create({ name: 'Nab' })
+    const userCreated = await DB.user.create({ name: 'Nab' })
     //     ^?
 }
 ```

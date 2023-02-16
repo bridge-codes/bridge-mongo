@@ -57,7 +57,7 @@ export type ExtractModelFromProj<Model, Proj extends Projection<Model>> = Preser
     [T in keyof Proj & keyof Model]: Proj[T] extends 1
       ? Model[T]
       : Proj[T] extends Projection<NonNullable<Model[T]>>
-      ? Pretify<ApplyProj<NonNullable<Model[T]>, Proj[T]>>
+      ? Pretify<ExtractModelFromProj<NonNullable<Model[T]>, Proj[T]>>
       : never;
   },
   Model
@@ -74,14 +74,8 @@ export type CompleteProj<Model> = {
 export type convertDBSchemasToDBI<DBSchemasI extends Record<string, SchemaClass<any, any>>> = {
   [ModelName in keyof DBSchemasI as Plurial<Lowercase<ModelName & string>>]: Pretify<
     IncludeIdAndTimestampsAndDefaultProperties<
-      SchemaToType<InferSchemaDefFromSchema<DBSchemasI[ModelName]>> &
-        Required<
-          Pick<
-            SchemaToType<InferSchemaDefFromSchema<DBSchemasI[ModelName]>>,
-            DefaultValueProperties<DBSchemasI[ModelName]>
-          >
-        >,
-      InferConfigfFromSchema<DBSchemasI[ModelName]>
+      SchemaToType<InferSchemaDefFromSchema<DBSchemasI[ModelName]>>,
+      DBSchemasI[ModelName]
     >
   >;
 };
