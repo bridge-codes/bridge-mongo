@@ -1,6 +1,7 @@
 import { BridgeModel } from './model';
 import { isError } from './utils';
 import { Schema } from './schema';
+import { Types } from 'mongoose';
 
 const createDB = <DBSchemasI extends Record<string, Schema<any, any>>>(
   DBSchemas: DBSchemasI,
@@ -16,4 +17,5 @@ const createDB = <DBSchemasI extends Record<string, Schema<any, any>>>(
 };
 
 export { Schema, createDB, isError };
+export const ObjectId = Types.ObjectId;
 export * as mongoose from 'mongoose';

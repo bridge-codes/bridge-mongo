@@ -157,14 +157,14 @@ const DB = createDB({
 async () => {
   
   // Fetching all users that have created post with their posts
-  const creators = await DB.user
+  const blogers = await DB.user
     .aggregate()
     .project({ name: 1 })
     .lookup({ from: 'posts', localField: '_id', foreignField: 'userId' })
     .match({ 'posts.0': { $exists: true } })
     .exec();
 
-  console.log(creators);
+  console.log(blogers);
   //            ^?
 
 

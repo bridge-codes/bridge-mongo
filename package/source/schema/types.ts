@@ -1,4 +1,4 @@
-import { Mixed, ObjectId } from 'mongoose';
+import { Decimal128, Mixed, ObjectId } from 'mongoose';
 import { Pretify } from '../utils';
 
 type PreserverOptionalTypesFromShema<
@@ -26,6 +26,8 @@ type ConstructorTypeToType<ConstructorType> = ConstructorType extends Array<infe
   : ConstructorType extends { type: infer Type }
   ? ConstructorTypeToType<Type>
   : ConstructorType extends NumberConstructor
+  ? number
+  : ConstructorType extends Decimal128
   ? number
   : ConstructorType extends StringConstructor
   ? string
