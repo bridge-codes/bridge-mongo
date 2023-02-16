@@ -102,5 +102,9 @@ const DB = createDB({
 async () => {
     const userCreated = await DB.user.create({ name: 'Nab' })
     //     ^?
+
+
+    // const user = await DB.user.findOne({ name: 'Nab' })
+
 }
 ```

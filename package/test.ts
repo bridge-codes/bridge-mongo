@@ -31,7 +31,7 @@ const DB = createDB({
 });
 
 async () => {
-  const user = await DB.user.modelInterface;
+  const user = await DB.user.create({ name: 'ui', age: 89 });
 
   if (isError(user)) return;
 

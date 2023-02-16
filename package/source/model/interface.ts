@@ -1,6 +1,12 @@
 import { Pretify, StricProperty, Plurial } from '../utils';
 import { ObjectId, ClientSession, UpdateQuery } from 'mongoose';
-import { InferSchemaDefFromSchema, InferConfigfFromSchema, Schema as SchemaClass } from '../schema';
+import {
+  InferSchemaDefFromSchema,
+  InferConfigfFromSchema,
+  Schema as SchemaClass,
+  DefaultValueProperties,
+  SchemaToType,
+} from '../schema';
 import {
   CreateReturnWithErrors,
   Projection,
@@ -22,7 +28,7 @@ export interface BridgeModelI<
   Schema extends SchemaClass<any, any> = SchemasI[ModelName],
   ModelI = DBI[Plurial<Lowercase<ModelName>> & keyof DBI],
 > {
-  create: <CreateData extends Omit<ModelI, '_id' | 'updatedAt' | 'createdAt'>>(
+  create: <CreateData extends SchemaToType<InferSchemaDefFromSchema<Schema>>>(
     data: StricProperty<CreateData, ModelI>,
     options?: {
       session?: ClientSession;
