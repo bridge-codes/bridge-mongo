@@ -19,9 +19,9 @@ const Section1 = () => {
   return (
     <div className='md:px-6 md:rounded-md py-6'>
       <div className='bg-neutral-100  md:rounded-md px-6'>
-        <div className='max-w-7xl grid grid-cols-2 mx-auto py-24 gap-16'>
+        <div className='max-w-7xl grid md:grid-cols-2 mx-auto md:pt-24 md:pb-48 pt-12 pb-12 gap-16'>
           <div className=''>
-            <h1 className='font-bold text-5xl text-neutral-900'>A mongoose wrapper that enables type-safety and auto-completion</h1>
+            <h1 className='font-bold md:text-5xl text-4xl text-neutral-900'>A mongoose wrapper that enables type-safety and auto-completion</h1>
             <p className='text-neutral-600 mt-6'>
               Make strong links between your models by using a type-safe alternative to mongoose.
             </p>
@@ -31,7 +31,7 @@ const Section1 = () => {
             </div>
           </div>
           <div className='relative'>
-            <img src="code-demo.svg" className='absolute' />
+            <video className='md:absolute rounded-md' src='/bridge-mongo-demo.mp4' loop={true} autoPlay={true} />
           </div>
         </div>
       </div>
@@ -41,10 +41,10 @@ const Section1 = () => {
 
 const Section2 = () => {
   return (
-    <div className='max-w-7xl mx-auto px-4 xl:pt-48 md:pt-32 sm:pt-24 pt-12 pb-24'>
-      <p className='uppercase text-center font-medium text-xs text-neutral-600'>Can be easily used with:</p>
-      <img src="/frameworks.svg" className="mx-auto mt-4" />
-      <div className='grid grid-cols-2 gap-8 mt-12'>
+    <div className='max-w-7xl mx-auto px-4 xl:pt-48 md:pt-32 sm:pt-24 pt-0 pb-12'>
+      {/* <p className='uppercase text-center font-medium text-xs text-neutral-600'>Can be easily used with:</p> */}
+      {/* <img src="/frameworks.svg" className="mx-auto mt-4" /> */}
+      <div className='grid md:grid-cols-2 gap-8 mt-12'>
         <div className='border border-neutral-200 md:p-12 sm:p-8 p-6 rounded-md'>
           <h3 className='font-medium text-xl text-neutral-800'>Easy to use</h3>
           <p className='text-neutral-600 mt-1'>Easy to integrate into your framework of choice, it saves repetitive CRUD boilerplate and increases type safety. It’s perfect for building production-grade, robust and scalable web applications.</p>
@@ -60,6 +60,10 @@ const Section2 = () => {
           </div>
         </div>
       </div>
+
+      <div className='rounded-md overflow-hidden mt-8 w-full aspect-video'>
+        <iframe src="https://stackblitz.com/edit/bridge-mongo?ctl=1&embed=1&file=index.ts&hideNavigation=1&view=editor" className='w-full aspect-video h-full' />
+      </div>
     </div>
   )
 }
@@ -68,7 +72,7 @@ const GetDeeper = () => {
   return (
     <div className='border-t border-neutral-200'>
       <div className='max-w-7xl px-4 mx-auto py-16'>
-        <div className='grid grid-cols-12 items-center'>
+        <div className='grid md:grid-cols-12 items-center gap-6'>
           <div className='col-span-3'>
             <h3 className='text-neutral-900 font-bold text-5xl'>Want to get deeper?</h3>
           </div>
