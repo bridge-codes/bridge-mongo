@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 /**
  * Any CSS included here will be global. The classic template
  * bundles Infima by default. Infima is a CSS framework designed to
@@ -5,6 +8,31 @@
  */
 
 /* You can override the default Infima variables here. */
+.navbar {
+  @apply border-neutral-200 border-b;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .navbar {
+  @apply border-neutral-800;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] a.menu__link.menu__link--active {
+  background: rgb(38,38,38,0.5);
+}
+
+a.menu__link {
+  border-left: solid 4px rgb(23,159,110,0.0);
+  border-radius: 2px;
+}
+
+a.menu__link.menu__link--active {
+  background: #f5f5f5;
+  border-left: solid 4px #179F6E;
+  border-radius: 0px;
+}
+
 :root {
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
