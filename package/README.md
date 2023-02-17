@@ -56,7 +56,7 @@ const userSchema = new Schema({
   name: { type: String, required: true },
   email: String,
   age: { type: Number, default: 18 },
-  job: { type: String, enum: ['developer', 'designer'] as const },
+  job: { type: String, enum: ['developer', 'designer'] },
   settings: {
     isActive: Boolean,
   },
