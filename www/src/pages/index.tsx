@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className='bg-white'>
       <Layout>
-        {/* <Redirect to="/docs/quickstart" /> */}
+        <Redirect to="/docs/quickstart" />
         <Section1 />
         <Section2 />
         <GetDeeper />
@@ -23,7 +23,7 @@ const Section1 = () => {
           <div className=''>
             <h1 className='font-bold md:text-5xl text-4xl text-neutral-900'>The fully typed Typescript mongoDB ODM</h1>
             <p className='text-neutral-600 mt-6'>
-            No more guesswork, no more struggling: Bridge-mongo simplifies your MongoDB queries and aggregate pipelines
+              No more guesswork, no more struggling: Bridge-mongo simplifies your MongoDB queries and aggregate pipelines
             </p>
             <div className='flex gap-4 mt-9'>
               <Button name="Get started" />
