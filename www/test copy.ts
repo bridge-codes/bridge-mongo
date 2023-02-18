@@ -23,14 +23,16 @@ const { user } = createDB({
 
 async () => {
   // Retrieve all users with their first post
-  const usersWithFirstPost = await user
+  const users = await user
     .aggregate()
     .project({ name: 1 })
-    .lookup({ from: 'posts', let: { userId: '$_id' }, as: 'firstPost' }, (post, { userId }) =>
-      post
-        .match({ $expr: { $eq: ['$userId', userId] } })
-        .sort({ createdAt: 1 })
-        .limit(1),
+    .lookup(
+      { from: 'posts', let: { userId: '$_id' }, as: 'firstPost' },
+      (post, { userId }) =>
+        post
+          .match({ $expr: { $eq: ['$userId', userId] } })
+          .sort({ createdAt: 1 })
+          .limit(1),
     )
     .unwind('$firstPost')
     .exec();

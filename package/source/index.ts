@@ -12,7 +12,7 @@ const createDB = <DBSchemasI extends Record<string, Schema<any, any>>>(
 } => {
   const DB: Record<string, BridgeModel<any, any>> = {};
   for (const [modelName, schema] of Object.entries(DBSchemas))
-    DB[modelName] = new BridgeModel<any, any>(schema, modelName);
+    DB[modelName.toLowerCase()] = new BridgeModel<any, any>(schema, modelName);
   return DB as any;
 };
 

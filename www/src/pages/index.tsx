@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className='bg-white'>
       <Layout>
-        <Redirect to="/docs/quickstart" />
+        {/* <Redirect to="/docs/quickstart" /> */}
         <Section1 />
         <Section2 />
         <GetDeeper />
@@ -21,9 +21,9 @@ const Section1 = () => {
       <div className='bg-neutral-100  md:rounded-md px-6'>
         <div className='max-w-7xl grid md:grid-cols-2 mx-auto md:pt-24 md:pb-48 pt-12 pb-12 gap-16'>
           <div className=''>
-            <h1 className='font-bold md:text-5xl text-4xl text-neutral-900'>A mongoose wrapper that enables type-safety and auto-completion</h1>
+            <h1 className='font-bold md:text-5xl text-4xl text-neutral-900'>The fully typed Typescript mongoDB ODM</h1>
             <p className='text-neutral-600 mt-6'>
-              Make strong links between your models by using a type-safe alternative to mongoose.
+            No more guesswork, no more struggling: Bridge-mongo simplifies your MongoDB queries and aggregate pipelines
             </p>
             <div className='flex gap-4 mt-9'>
               <Button name="Get started" />

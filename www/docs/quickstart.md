@@ -14,7 +14,7 @@ pnpm add bridge-mongo
 
 ## Define your Schemas
 
-Defining your schemas in bridge-mongo is just as easy as it is with Mongoose. You can define your schemas using Mongoose's schema syntax, and then use the createDB function to create your models.
+Defining your schemas in bridge-mongo is just as easy as it is with Mongoose. You define your schemas using Mongoose's schema syntax, and then use the createDB function to create your models.
 
 When you use `createDB`, bridge-mongo will automatically create and register each model with Mongoose using the keys from your schema object as the model names. This means you can define all of your schemas in one place and have them automatically created and registered as models for you.
 
