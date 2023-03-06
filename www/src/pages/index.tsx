@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import Layout from '@theme/Layout';
-import { Redirect } from '@docusaurus/router';
+import { BoltIcon, CommandLineIcon, Square3Stack3DIcon } from "@heroicons/react/24/outline"
 
 export default function Home() {
   return (
     <div className='bg-white'>
       <Layout>
-        <Redirect to="/docs/quickstart" />
+        {/* <Redirect to="/docs/quickstart" /> */}
         <Section1 />
         <Section2 />
         <GetDeeper />
@@ -26,12 +26,14 @@ const Section1 = () => {
               No more guesswork, no more struggling: Bridge-mongo simplifies your MongoDB queries and aggregate pipelines
             </p>
             <div className='flex gap-4 mt-9'>
-              <Button name="Get started" />
-              <ButtonSec name="Clone the example" />
+              <Button name="Get started" onClick={() => {
+                window.location.href = "/docs/quickstart"
+              }} />
+              {/* <ButtonSec name="Clone the example" /> */}
             </div>
           </div>
           <div className='relative'>
-            <video className='md:absolute rounded-md' src='/bridge-mongo-demo.mp4' loop={true} autoPlay={true} />
+            <video className='md:absolute rounded-md -top-12' src='/bridge-mongo-demo.mp4' autoPlay={true} controls={true} />
           </div>
         </div>
       </div>
@@ -46,22 +48,24 @@ const Section2 = () => {
       {/* <img src="/frameworks.svg" className="mx-auto mt-4" /> */}
       <div className='grid md:grid-cols-2 gap-8 mt-12'>
         <div className='border border-neutral-200 md:p-12 sm:p-8 p-6 rounded-md'>
-          <h3 className='font-medium text-xl text-neutral-800'>Easy to use</h3>
-          <p className='text-neutral-600 mt-1'>Easy to integrate into your framework of choice, it saves repetitive CRUD boilerplate and increases type safety. It’s perfect for building production-grade, robust and scalable web applications.</p>
+          <BoltIcon className='h-7 w-7 text-neutral-900 mb-2' />
+          <h3 className='font-medium text-xl text-neutral-800 mb-4'>Similar syntax of mongoose</h3>
+          <p className='text-neutral-600 mt-1'>Bridge-mongo's syntax is designed to be very similar to Mongoose, making it easy for developers to transition to using it. This means you can continue to use the same familiar syntax, while taking advantage of all the benefits of Bridge-mongo's fully typed ORM. With Bridge-mongo, you can enjoy the convenience and flexibility of Mongoose, while ensuring type safety and avoiding the pitfalls of dynamic typing.</p>
         </div>
         <div className='flex flex-col gap-8'>
           <div className='border border-neutral-200 md:p-12 sm:p-8 p-6 rounded-md'>
-            <h3 className='font-medium text-xl text-neutral-800'>Easy to use</h3>
-            <p className='text-neutral-600 mt-1'>Easy to integrate into your framework of choice, it saves repetitive CRUD boilerplate and increases type safety. It’s perfect for building production-grade, robust and scalable web applications.</p>
+            <Square3Stack3DIcon className='h-7 w-7 text-neutral-900 mb-2' />
+            <h3 className='font-medium text-xl text-neutral-800 mb-4'>Complex aggregation</h3>
+            <p className='text-neutral-600 mt-1'>With Bridge-mongo, you can easily perform complex aggregation pipelines, making it easy to query, transform, and analyze data from your MongoDB collections. This makes it an ideal choice for building data-intensive applications.</p>
           </div>
           <div className='border border-neutral-200 md:p-12 sm:p-8 p-6 rounded-md'>
-            <h3 className='font-medium text-xl text-neutral-800'>Easy to use</h3>
-            <p className='text-neutral-600 mt-1'>Easy to integrate into your framework of choice, it saves repetitive CRUD boilerplate and increases type safety. It’s perfect for building production-grade, robust and scalable web applications.</p>
+            <CommandLineIcon className='h-7 w-7 text-neutral-900 mb-2' />
+            <h3 className='font-medium text-xl text-neutral-800 mb-4'>Fully typed</h3>
+            <p className='text-neutral-600 mt-1'>Bridge-mongo is written in Typescript, making it fully typed and providing better type-safety and code completion in your IDE. This ensures fewer runtime errors and makes development much more efficient.</p>
           </div>
         </div>
       </div>
-
-      <div className='rounded-md overflow-hidden mt-8 w-full aspect-video'>
+      <div className='rounded-md overflow-hidden mt-8 w-full aspect-video sm:block hidden'>
         <iframe src="https://stackblitz.com/edit/bridge-mongo?ctl=1&embed=1&file=index.ts&hideNavigation=1&view=editor" className='w-full aspect-video h-full' />
       </div>
     </div>
@@ -77,10 +81,12 @@ const GetDeeper = () => {
             <h3 className='text-neutral-900 font-bold text-5xl'>Want to get deeper?</h3>
           </div>
           <div className='col-span-9'>
-            <p className='text-neutral-600 text-lg'>Try out Bridge (Nodejs Typescript framework) and see how you could have a fully type-safe API</p>
+            <p className='text-neutral-600 text-lg'>Try out Bridge, a Nodejs Typescript framework and see how you could have a fully type-safe API</p>
             <div className='flex gap-3 mt-3'>
-              <Button name="Discover bridge" />
-              <ButtonSec name="Bridge + bridge-mongo example" />
+              <Button name="Discover Bridge" onClick={() => {
+                window.location.href = "https://bridge.codes"
+              }} />
+              {/* <ButtonSec name="Bridge + bridge-mongo example" /> */}
             </div>
           </div>
         </div>
@@ -89,13 +95,13 @@ const GetDeeper = () => {
   )
 }
 
-interface MainButtonProps {
+interface MainButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   name: string;
 }
 
 const Button = (props: MainButtonProps) => {
   return (
-    <button className='text-sm text-white font-medium rounded-sm bg-main px-8 py-2.5'>
+    <button className='text-sm text-white font-medium rounded-sm bg-main px-8 py-2.5' {...props}>
       {props.name}
     </button>
   )
