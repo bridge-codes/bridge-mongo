@@ -152,6 +152,15 @@ export class BridgeModel<
       throw err;
     }
   };
+
+  exists: BridgeModelI<SchemasI, ModelName>['exists'] = async (filter) => {
+    try {
+      return (await this.mongooseModel.exists(filter as any)) !== null;
+    } catch (err) {
+      // Should we handle some errors here ?
+      throw err;
+    }
+  };
 }
 
 export * from './types';

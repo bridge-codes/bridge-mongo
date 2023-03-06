@@ -95,4 +95,6 @@ export interface BridgeModelI<
   ) => Promise<
     ApplyProj<ModelI, Proj> | { error: { status: 404; name: `${ModelName} not found` } }
   >;
+
+  exists: (filter: MatchQuery<ModelI>) => Promise<boolean>;
 }
