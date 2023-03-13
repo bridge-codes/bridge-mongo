@@ -1,5 +1,5 @@
 import { Pretify, StricProperty, Plurial } from '../utils';
-import { ObjectId, ClientSession, UpdateQuery } from 'mongoose';
+import { Types, ClientSession, UpdateQuery } from 'mongoose';
 import {
   InferSchemaDefFromSchema,
   InferConfigfFromSchema,
@@ -50,7 +50,7 @@ export interface BridgeModelI<
   ) => Promise<Array<ApplyProj<ModelI, Proj>>>;
 
   findById: <Proj extends Projection<Required<ModelI>> = CompleteProj<ModelI>>(
-    filer: string | ObjectId,
+    filer: string | Types.ObjectId,
     proj?: Proj,
     options?: FindOneOptions,
   ) => Promise<
@@ -75,7 +75,7 @@ export interface BridgeModelI<
   >;
 
   findByIdAndUpdate: <Proj extends Projection<Required<ModelI>> = CompleteProj<ModelI>>(
-    filter: string | ObjectId,
+    filter: string | Types.ObjectId,
     updateQuery: UpdateQuery<ModelI>,
     options?: FindAndUpdateOptions<Proj, ModelI>,
   ) => Promise<
@@ -90,7 +90,7 @@ export interface BridgeModelI<
   >;
 
   findByIdAndDelete: <Proj extends Projection<Required<ModelI>> = CompleteProj<ModelI>>(
-    filter: string | ObjectId,
+    filter: string | Types.ObjectId,
     options?: FindAndDeleteOptions<Proj, ModelI>,
   ) => Promise<
     ApplyProj<ModelI, Proj> | { error: { status: 404; name: `${ModelName} not found` } }

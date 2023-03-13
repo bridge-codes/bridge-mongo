@@ -8,19 +8,22 @@ const user3Schema = new Schema(
 );
 
 // Defining a User Schema
-const userSchema = new Schema({
-  name: { type: String, required: true },
-  email: String,
-  test: mongoose.Types.ObjectId,
-  age: { type: Number, default: 18 },
-  job: { type: String, enum: ['developer', 'designer'] },
-  settings: {
-    isActive: Boolean,
-    test: {
-      type: Boolean,
+const userSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    email: String,
+    test: mongoose.Types.ObjectId,
+    age: { type: Number, default: 18 },
+    job: { type: String, enum: ['developer', 'designer'] },
+    settings: {
+      isActive: Boolean,
+      test: {
+        type: Boolean,
+      },
     },
   },
-});
+  { timestamps: true },
+);
 
 // Defining a Post Schema
 const postSchema = new Schema(
@@ -40,7 +43,7 @@ const DB = createDB({
 async () => {
   const user = await DB.user.create({ name: 'Nab' });
   //     ^?
-  const post = await DB.post.findOne({ userId: user._id });
+  const post = await DB.post.findOne({ userId: user._id }, { createdAt: 1 });
   //      ^?
   const users = await DB.user.find({ age: { $gt: 21 } }, { name: 1 });
   //      ^?

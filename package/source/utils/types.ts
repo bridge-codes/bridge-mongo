@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 export type Pretify<T> = {
   [K in keyof T]: T[K];
@@ -38,7 +38,7 @@ export type FlatPath<T> = keyof {
   [key in keyof Required<T> as NonNullable<T[key]> extends Record<any, any>
     ? Required<T>[key] extends Array<any>
       ? never
-      : Required<T>[key] extends Date | ObjectId | Buffer
+      : Required<T>[key] extends Date | Types.ObjectId | Buffer
       ? key
       : IsAny<Required<T>[key]> extends true
       ? key

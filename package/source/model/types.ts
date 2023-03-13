@@ -8,7 +8,7 @@ import {
   Plurial,
 } from '../utils';
 import {
-  ObjectId,
+  Types,
   SchemaDefinition,
   ClientSession,
   SortOrder,
@@ -39,13 +39,13 @@ export type IncludeIdAndTimestampsAndDefaultProperties<
   Data = Model,
 > = (InferConfigfFromSchema<Schema>['timestamps'] extends true
   ? { createdAt: Date; updatedAt: Date }
-  : {}) & { _id: ObjectId } & Required<
+  : {}) & { _id: Types.ObjectId } & Required<
     Pick<Model, DefaultValueProperties<InferSchemaDefFromSchema<Schema>> & keyof Model>
   > &
   Data;
 
 export type Projection<Model> = {
-  [T in keyof Model]?: NonNullable<Model[T]> extends ObjectId | Date
+  [T in keyof Model]?: NonNullable<Model[T]> extends Types.ObjectId | Date
     ? 1
     : NonNullable<Model[T]> extends Record<any, any>
     ? 1 | Projection<Model[T]>
@@ -64,7 +64,7 @@ export type ExtractModelFromProj<Model, Proj extends Projection<Model>> = Preser
 >;
 
 export type ApplyProj<Model, Proj extends Projection<Model>> = Pretify<
-  { _id: ObjectId } & ExtractModelFromProj<Model, Proj>
+  { _id: Types.ObjectId } & ExtractModelFromProj<Model, Proj>
 >;
 
 export type CompleteProj<Model> = {
@@ -116,7 +116,7 @@ type TypeAliases =
   | 'array'
   | 'binData'
   | 'undefined'
-  | 'objectId'
+  | 'Types.ObjectId'
   | 'bool'
   | 'date'
   | 'null'
@@ -170,6 +170,15 @@ type OnFieldOperation<Type> = Type extends Array<infer SubType>
           $options?: RegexOptions;
         } & {
           [Operator in '$eq' | '$ne']?: string | RegExp;
+        } & {
+          [Operator in ArrayComparisonOperator]?: Array<string | RegExp>;
+        })
+  : Type extends Types.ObjectId
+  ?
+      | string
+      | Types.ObjectId
+      | ({ $not?: string | Types.ObjectId; $exists?: boolean } & {
+          [Operator in '$eq' | '$ne']?: string | Types.ObjectId;
         } & {
           [Operator in ArrayComparisonOperator]?: Array<string | RegExp>;
         })

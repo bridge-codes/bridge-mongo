@@ -57,7 +57,7 @@ export class Aggregate<
 
     lookup.pipeline = subAggregate(new Aggregate(), paramLookupAggregate).pipe;
 
-    return new Aggregate(this.mongoModel, [...this.pipe, { $lookup: lookupQuery }]) as any;
+    return new Aggregate(this.mongoModel, [...this.pipe, { $lookup: lookup }]) as any;
   };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
